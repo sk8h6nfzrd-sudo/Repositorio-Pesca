@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f6f78">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Registro pesca">
+<title>Registro pesca</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2ef;--card:#fbfcfb;--ink:#14262b;--mute:#5d7076;--line:#cfdad6;--water:#1f6f78;--lure:#d9622b;--onwater:#fff;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1b1f;--card:#16282d;--ink:#e6eeec;--mute:#93a9ae;--line:#26393e;--water:#4fb3bd;--lure:#f08a55;--onwater:#08171a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1b1f;--card:#16282d;--ink:#e6eeec;--mute:#93a9ae;--line:#26393e;--water:#4fb3bd;--lure:#f08a55;--onwater:#08171a;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 "Bricolage Grotesque",system-ui,-apple-system,sans-serif;max-width:560px;margin-inline:auto;padding:16px 16px 96px}
+h1{font-size:30px;font-weight:800;margin:8px 0 14px;letter-spacing:-.02em}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.stat{background:var(--water);color:var(--onwater);border-radius:14px;padding:12px}
+.stat b{display:block;font-size:26px;font-weight:800;line-height:1.1}
+.stat span{font-size:13px;opacity:.9}
+.trip{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.trip h3{margin:0;font-size:18px;font-weight:600}
+.meta{color:var(--mute);font-size:14px;margin:2px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:14px}
+.note{margin:8px 0 0;font-size:15px}
+.del{background:none;border:0;color:var(--mute);font:inherit;font-size:14px;padding:8px 0 0;cursor:pointer}
+.empty{text-align:center;color:var(--mute);padding:40px 12px}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--lure);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{width:100%;font:inherit;font-weight:600;border:0;border-radius:12px;padding:14px;margin-top:16px;background:var(--lure);color:#fff;cursor:pointer}
+.btn.alt{background:none;color:var(--water);border:1px solid var(--line);margin-top:8px;padding:11px}
+.gps{margin-top:6px;font-size:14px;color:var(--mute)}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--lure);color:#fff;border:0;border-radius:99px;padding:14px 22px;font:inherit;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+.ph{width:100%;max-height:320px;object-fit:cover;border-radius:10px;margin-top:10px;display:block}
+#prev{margin-top:8px}
+#q{margin-bottom:12px}
+.map{color:var(--water);font-weight:600}
+summary{font-weight:600;cursor:pointer}
+body.fv{max-width:none;padding:12px 20px 0}
+#form{min-height:calc(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column}
+#form h1{margin-top:4px}
+#form input,#form textarea{font-size:17px;padding:14px}
+#form textarea{min-height:120px;flex:1}
+#form label{font-size:15px;margin-top:14px}
+.bar{position:sticky;bottom:0;margin-top:16px;display:grid;grid-template-columns:1fr 2fr;gap:10px;padding:12px 0 8px;background:var(--bg)}
+.bar .btn{margin-top:0}
+.del{margin-right:18px}
+.seg{display:flex;gap:6px;margin:10px 0}
+.seg button{flex:1;font:inherit;font-size:14px;padding:8px;border:1px solid var(--line);border-radius:99px;background:none;color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--water);color:var(--onwater);border-color:var(--water)}
+.b{display:grid;grid-template-columns:84px 1fr 34px;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+.bl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bt{background:var(--line);border-radius:6px;height:16px;overflow:hidden}
+.bt i{display:block;height:100%;background:var(--lure);border-radius:6px}
+.b b{text-align:right}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<section id="list">
+  <h1>Registro pesca</h1>
+  <div class="stats">
+    <div class="stat"><b id="s1">0</b><span>salidas</span></div>
+    <div class="stat"><b id="s2">0</b><span>capturas</span></div>
+    <div class="stat"><b id="s3">–</b><span>pieza mayor</span></div>
+  </div>
+  <details class="trip" id="chart" hidden><summary>Gráfico de capturas</summary><div class="seg"><button data-m="mes" class="on">Por mes</button><button data-m="esp">Por especie</button></div><div id="bars"></div></details>
+  <details class="trip" id="pts" hidden><summary>Mis puntos de pesca</summary><div id="ptsList"></div></details>
+  <input id="q" type="search" placeholder="Buscar por especie, lugar o señuelo" aria-label="Buscar salidas">
+  <div id="trips"></div>
+  <button class="btn alt" id="copy">Copiar respaldo de datos</button>
+  <button class="fab" id="add">Nueva salida</button>
+</section>
+
+<section id="form" hidden>
+  <h1 id="ftitle">Nueva salida</h1>
+  <label for="date">Fecha</label><input id="date" type="date">
+  <label for="place">Lugar</label><input id="place" placeholder="Río, lago o playa">
+  <button class="btn alt" id="gpsBtn" type="button">Usar mi ubicación GPS</button>
+  <div class="gps" id="gps"></div>
+  <label for="species">Especie</label><input id="species" placeholder="Ej. trucha arcoíris">
+  <div class="row">
+    <div><label for="qty">Cantidad</label><input id="qty" type="number" inputmode="numeric" min="0" value="1"></div>
+    <div><label for="size">Talla mayor (cm)</label><input id="size" type="number" inputmode="decimal" min="0"></div>
+  </div>
+  <div class="row">
+    <div><label for="weight">Peso mayor (kg)</label><input id="weight" type="number" inputmode="decimal" min="0" step="0.01"></div>
+    <div><label for="bait">Señuelo o carnada</label><input id="bait"></div>
+  </div>
+  <label for="weather">Clima</label><input id="weather" placeholder="Soleado, viento suave, 18 °C">
+  <label for="notes">Notas</label><textarea id="notes" rows="3"></textarea>
+  <label for="photo">Foto de la captura</label><input id="photo" type="file" accept="image/*">
+  <img id="prev" class="ph" alt="Vista previa de la foto" hidden>
+  <div class="bar"><button class="btn alt" id="cancel">Cancelar</button><button class="btn" id="save">Guardar salida</button></div>
+</section>
+
+<script>
+const KEY="diario-pesca-v1";
+let trips=[],coords=null,photo=null;
+const $=id=>document.getElementById(id);
+try{trips=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){trips=[]}
+trips.forEach(t=>{if(!t.id)t.id=newId()});
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(trips))}catch(e){alert("No hay espacio para guardar. Elimina salidas con foto.")}}
+function newId(){return "t"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function fmtDate(d){const [y,m,day]=d.split("-");return new Date(y,m-1,day).toLocaleDateString("es",{day:"numeric",month:"long",year:"numeric"})}
+function mapUrl(t){return "https://maps.apple.com/?ll="+t.coords.lat+","+t.coords.lon+"&q="+encodeURIComponent(t.place||"Punto de pesca")}
+function render(){
+  const total=trips.reduce((a,t)=>a+(+t.qty||0),0);
+  const big=trips.reduce((a,t)=>Math.max(a,+t.size||0),0);
+  $("s1").textContent=trips.length;$("s2").textContent=total;$("s3").textContent=big?big+" cm":"–";
+  const pts={};trips.forEach(t=>{if(t.coords){const k=(t.place||"Sin nombre").trim();(pts[k]=pts[k]||{t,n:0}).n++}});
+  const ks=Object.keys(pts);
+  $("pts").hidden=!ks.length;drawChart();
+  $("ptsList").innerHTML=ks.map(k=>'<p class="note"><a class="map" target="_blank" rel="noopener" href="'+mapUrl(pts[k].t)+'">'+esc(k)+'</a> · '+pts[k].n+(pts[k].n>1?" salidas":" salida")+'</p>').join("");
+  const q=$("q").value.trim().toLowerCase();
+  const view=trips.map((t,i)=>({t,i})).filter(({t})=>!q||[t.place,t.species,t.bait,t.notes].join(" ").toLowerCase().includes(q));
+  $("trips").innerHTML=view.length?view.map(({t,i})=>{
+    const chips=[t.species,t.qty?t.qty+" capturas":"",t.size?t.size+" cm":"",t.weight?t.weight+" kg":"",t.bait,t.weather].filter(Boolean).map(c=>'<span class="chip">'+esc(c)+'</span>').join("");
+    return '<article class="trip"><h3>'+esc(t.place||"Sin lugar")+'</h3><div class="meta">'+fmtDate(t.date)+(t.coords?' · <a class="map" target="_blank" rel="noopener" href="'+mapUrl(t)+'">Ver en Mapas</a>':"")+'</div><div class="chips">'+chips+'</div>'+(t.photo?'<img class="ph" alt="Foto de la captura" src="'+t.photo+'">':"")+(t.notes?'<p class="note">'+esc(t.notes)+'</p>':"")+'<button class="del" data-e="'+i+'">Editar</button><button class="del" data-i="'+i+'">Eliminar salida</button></article>'
+  }).join(""):'<div class="empty">'+(trips.length?"Ninguna salida coincide con tu búsqueda.":"Aún no hay salidas. Toca “Nueva salida” para registrar la primera.")+'</div>';
+}
+function show(f){$("list").hidden=f;$("form").hidden=!f;document.body.classList.toggle("fv",f);window.scrollTo(0,0)}
+let editing=null,cmode="mes";
+function openForm(t){
+  editing=t.id;$("ftitle").textContent="Editar salida";
+  ["date","place","species","qty","size","weight","bait","weather","notes"].forEach(k=>$(k).value=t[k]||"");
+  coords=t.coords||null;photo=t.photo||null;$("photo").value="";
+  $("prev").src=photo||"";$("prev").hidden=!photo;
+  $("gps").textContent=coords?"Ubicación guardada: "+coords.lat+", "+coords.lon:"";
+  show(true)
+}
+function drawChart(){
+  $("chart").hidden=!trips.length;
+  const tot={};
+  trips.forEach(t=>{
+    const k=cmode==="mes"?String(t.date).slice(0,7):((t.species||"").trim().toLowerCase()||"sin especie");
+    tot[k]=(tot[k]||0)+(+t.qty||0)
+  });
+  let ks=Object.keys(tot);
+  ks=cmode==="mes"?ks.sort().slice(-12):ks.sort((a,b)=>tot[b]-tot[a]).slice(0,8);
+  const max=Math.max(1,...ks.map(k=>tot[k]));
+  $("bars").innerHTML=ks.map(k=>{
+    let l;
+    if(cmode==="mes"){const [y,m]=k.split("-");l=new Date(y,m-1,1).toLocaleDateString("es",{month:"short",year:"2-digit"})}
+    else{l=k.charAt(0).toUpperCase()+k.slice(1)}
+    return '<div class="b"><span class="bl">'+esc(l)+'</span><div class="bt"><i style="width:'+Math.round(tot[k]/max*100)+'%"></i></div><b>'+tot[k]+'</b></div>'
+  }).join("")
+}
+$("chart").onclick=e=>{
+  const m=e.target.dataset.m;if(!m)return;
+  cmode=m;
+  document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.dataset.m===m));
+  drawChart()
+};
+$("add").onclick=()=>{editing=null;$("ftitle").textContent="Nueva salida";
+  ["place","species","size","weight","bait","weather","notes"].forEach(k=>$(k).value="");
+  $("qty").value=1;$("date").value=new Date().toLocaleDateString("sv");
+  coords=null;photo=null;$("photo").value="";$("prev").hidden=true;$("gps").textContent="";show(true)
+};
+$("cancel").onclick=()=>show(false);
+$("q").oninput=render;
+$("photo").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{const im=new Image();
+    im.onload=()=>{const s=Math.min(1,640/Math.max(im.width,im.height));
+      const c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+      c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+      photo=c.toDataURL("image/jpeg",.6);$("prev").src=photo;$("prev").hidden=false};
+    im.src=r.result};
+  r.readAsDataURL(f)
+};
+$("gpsBtn").onclick=()=>{
+  $("gps").textContent="Buscando ubicación…";
+  try{navigator.geolocation.getCurrentPosition(
+    p=>{coords={lat:+p.coords.latitude.toFixed(5),lon:+p.coords.longitude.toFixed(5)};$("gps").textContent="Ubicación guardada: "+coords.lat+", "+coords.lon},
+    ()=>{$("gps").textContent="No se pudo obtener la ubicación. Revisa el permiso de ubicación del navegador."},
+    {enableHighAccuracy:true,timeout:15000})}
+  catch(e){$("gps").textContent="Este navegador no permite usar el GPS."}
+};
+$("save").onclick=()=>{
+  const g=k=>$(k).value.trim();
+  if(!g("date")){$("date").focus();return}
+  const nt={id:editing||newId(),date:g("date"),place:g("place"),species:g("species"),qty:g("qty"),size:g("size"),weight:g("weight"),bait:g("bait"),weather:g("weather"),notes:g("notes"),coords,photo};
+  if(editing){const k=trips.findIndex(x=>x.id===editing);if(k>-1)trips.splice(k,1)}
+  trips.unshift(nt);editing=null;
+  trips.sort((a,b)=>b.date.localeCompare(a.date));
+  persist();render();show(false)
+};
+$("trips").onclick=e=>{
+  const ed=e.target.dataset.e;
+  if(ed!==undefined){openForm(trips[+ed]);return}
+  const i=e.target.dataset.i;
+  if(i===undefined)return;
+  const b=e.target;
+  if(b.dataset.arm!=="1"){b.dataset.arm="1";b.textContent="¿Seguro? Toca otra vez";setTimeout(()=>{b.dataset.arm="";b.textContent="Eliminar salida"},3500);return}
+  const [gone]=trips.splice(+i,1);persist();render()
+};
+$("copy").onclick=async()=>{
+  try{await navigator.clipboard.writeText(JSON.stringify(trips,null,2));$("copy").textContent="Respaldo copiado"}
+  catch(e){$("copy").textContent="No se pudo copiar"}
+  setTimeout(()=>$("copy").textContent="Copiar respaldo de datos",2000)
+};
+render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
